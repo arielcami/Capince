@@ -21,11 +21,11 @@ import pe.com.capince.service.EmpleadoService;
 public class EmpleadoRestController {
 
     private final EmpleadoService empleadoService;
-
+       
     @GetMapping
     public ResponseEntity<List<EmpleadoDTO>> findAll() {
         return ResponseEntity.ok(empleadoService.findAllDTO());
-    }
+    }  
 
     @GetMapping("/{id}")
     public ResponseEntity<EmpleadoDTO> findById(@PathVariable Long id) {
@@ -41,7 +41,7 @@ public class EmpleadoRestController {
     public ResponseEntity<EmpleadoDTO> update(@PathVariable Long id, @RequestBody EmpleadoDTO dto) {
         return ResponseEntity.ok(empleadoService.updateDTO(id, dto));
     }
-
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         empleadoService.deleteByIdDTO(id);
@@ -53,7 +53,7 @@ public class EmpleadoRestController {
         empleadoService.activar(id);
         return ResponseEntity.noContent().build();
     }
-
+    
     @PatchMapping("/{id}/desactivar")
     public ResponseEntity<Void> desactivar(@PathVariable Long id) {
         empleadoService.desactivar(id);

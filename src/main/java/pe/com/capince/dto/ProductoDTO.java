@@ -13,7 +13,7 @@ public class ProductoDTO {
 
     private String nombre;
 
-    private TipoProductoDTO tipoProducto;
+    private String tipoProducto;
 
     private Double precio;
 

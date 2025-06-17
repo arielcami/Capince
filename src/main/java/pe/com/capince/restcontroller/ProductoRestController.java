@@ -30,6 +30,9 @@ public class ProductoRestController {
         return ResponseEntity.ok(guardado);
     }
 
+    
+    
+    
     // Obtener producto por ID
     @GetMapping("/{id}")
     public ResponseEntity<ProductoDTO> obtenerPorId(@PathVariable Long id) {
@@ -37,6 +40,9 @@ public class ProductoRestController {
         return ResponseEntity.ok(dto);
     }
 
+    
+    
+    
     // Listar todos los productos
     @GetMapping
     public ResponseEntity<List<ProductoDTO>> listarTodos() {
@@ -44,6 +50,9 @@ public class ProductoRestController {
         return ResponseEntity.ok(lista);
     }
 
+    
+    
+    
     // Actualizar producto
     @PutMapping("/{id}")
     public ResponseEntity<ProductoDTO> actualizar(@PathVariable Long id, @RequestBody ProductoDTO dto) {
@@ -52,12 +61,20 @@ public class ProductoRestController {
         return ResponseEntity.ok(actualizado);
     }
 
+    
+    
+    
+    
     // Eliminar producto
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         productoService.deleteByIdDTO(id);
         return ResponseEntity.noContent().build();
     }
+    
+    
+    
+    
 
     // PATCH: Cambiar estado del producto
     @PatchMapping("/{id}/estado")
@@ -65,11 +82,15 @@ public class ProductoRestController {
         productoService.cambiarEstado(id, estado);
         return ResponseEntity.noContent().build();
     }
+    
+    
+    
+    
 
     // PATCH: Ajustar stock del producto
     @PatchMapping("/{id}/stock")
-    public ResponseEntity<Void> ajustarStock(@PathVariable Long id, @RequestParam int cantidad) {
-        productoService.ajustarStock(id, cantidad);
+    public ResponseEntity<Void> ajustarStock(@PathVariable Long id, @RequestParam int delta) {
+        productoService.ajustarStock(id, delta);
         return ResponseEntity.noContent().build();
     }
 }

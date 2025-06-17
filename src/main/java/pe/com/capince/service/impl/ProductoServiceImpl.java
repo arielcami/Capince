@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import pe.com.capince.dto.ProductoDTO;
-import pe.com.capince.dto.TipoProductoDTO;
 import pe.com.capince.entity.ProductoEntity;
 import pe.com.capince.entity.TipoProductoEntity;
 import pe.com.capince.repository.ProductoRepository;
@@ -56,8 +55,9 @@ public class ProductoServiceImpl extends ServiceGenericImpl<ProductoEntity, Long
         existente.setStock(dto.getStock());
         existente.setEstado(dto.isEstado());
 
-        TipoProductoEntity tipoProducto = tipoProductoRepository.findById(dto.getTipoProducto().getId())
-                .orElseThrow(() -> new RuntimeException("Tipo de producto no válido"));
+        TipoProductoEntity tipoProducto = tipoProductoRepository.findByNombre(dto.getTipoProducto())
+                .orElseThrow(() -> new RuntimeException("Tipo de producto no válido: " + dto.getTipoProducto()));
+
         existente.setTipoProducto(tipoProducto);
 
         ProductoEntity actualizado = productoRepository.save(existente);
@@ -88,22 +88,22 @@ public class ProductoServiceImpl extends ServiceGenericImpl<ProductoEntity, Long
         productoRepository.actualizarStock(id, cantidad);
     }
 
-    // 🔁 Conversión Entity -> DTO
+    // Conversión Entity -> DTO
     private ProductoDTO toDTO(ProductoEntity entity) {
         return new ProductoDTO(
                 entity.getId(),
                 entity.getNombre(),
-                new TipoProductoDTO(entity.getTipoProducto().getId(), entity.getTipoProducto().getNombre()),
+                entity.getTipoProducto().getNombre(), // Solo nombre
                 entity.getPrecio().doubleValue(),
                 entity.getStock(),
                 entity.isEstado()
         );
     }
 
-    // 🔁 Conversión DTO -> Entity
+    // Conversión DTO -> Entity
     private ProductoEntity toEntity(ProductoDTO dto) {
-        TipoProductoEntity tipoProducto = tipoProductoRepository.findById(dto.getTipoProducto().getId())
-                .orElseThrow(() -> new RuntimeException("Tipo de producto no válido"));
+        TipoProductoEntity tipoProducto = tipoProductoRepository.findByNombre(dto.getTipoProducto())
+            .orElseThrow(() -> new RuntimeException("Tipo de producto no válido: " + dto.getTipoProducto()));
 
         return ProductoEntity.builder()
                 .id(dto.getId())
