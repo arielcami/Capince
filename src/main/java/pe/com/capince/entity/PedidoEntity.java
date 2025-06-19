@@ -2,7 +2,6 @@ package pe.com.capince.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -36,12 +35,16 @@ public class PedidoEntity implements Serializable {
     private EmpleadoEntity empleado;
 
     // Estado del pedido (tinyint)
-    @Column(name = "estado_pedido", nullable = false)
-    private Integer estadoPedido;
+    @Column(name = "estado", nullable = false)
+    private Byte estado;
 
     // Dirección de entrega (puede ser null)
     @Column(name = "direccion_entrega", length = 200)
     private String direccionEntrega;
+    
+    // Para llevar (TRUE) o para comer en el local (FALSE)
+    @Column(name = "llevar")
+    private boolean llevar;
 
     // Fecha del pedido (timestamp)
     @Column(name = "fecha_pedido", nullable = false, updatable = false)

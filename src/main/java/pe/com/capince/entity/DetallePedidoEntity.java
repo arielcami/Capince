@@ -2,7 +2,6 @@ package pe.com.capince.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -38,6 +37,9 @@ public class DetallePedidoEntity implements Serializable {
     // Precio unitario del producto en ese pedido
     @Column(name = "precio_unitario", nullable = false, precision = 10, scale = 2)
     private BigDecimal precioUnitario;
+    
+    @Column(name = "comentario", length = 70)
+    private String comentario;
 
     // Estado del detalle (activo/inactivo)
     @Column(name = "estado", nullable = false)
