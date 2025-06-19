@@ -42,7 +42,7 @@ public class DetallePedidoEntity implements Serializable {
     private String comentario;
 
     // Estado del detalle (activo/inactivo)
-    @Column(name = "estado", nullable = false)
+    @Column(name = "estado")
     private boolean estado;
 
     @Column(name = "creado_en", updatable = false)
