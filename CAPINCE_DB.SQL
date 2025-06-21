@@ -167,18 +167,18 @@ INSERT INTO rol (nombre) VALUES ('ADMIN'),('GERENTE'),('MESERO'),('DELIVERY'),('
 
 INSERT INTO tipo_producto (nombre) VALUES ('Entrada'),('Segundo'),('Bebida'),('Postre'),('Guarnición');
 
--- Clave admin y gerente = 123456, claves de los demas usuarios = 111222
+-- Todas la claves son 123456
 INSERT INTO empleado (nombre, apellido_paterno, apellido_materno, telefono, tipo_documento, documento, direccion, distrito, clave, rol, sexo, estado) VALUES 
-('Admin', 'Admin', 'Admin', '999999999', 1, '49086269', '000000000000', 1, '$2a$12$I1.TkyYveWH/V0LNZC5j0u2flNiChDY7fp1ZOzpDHF2ve9RO70UmG', 1, 3, b'1'), 
-('Mariela', 'Solorzano', 'Vargas', '987654321', 1, '41015448', 'Jirón Las Gaviotas 122', 2, '$2a$10$HbF1iBH2Ii85yWCsTZkxMeH6g3wOtmNeGsGf7cQDFN4oqos4H9era', 2, 2, b'1'), 
-('Andrea Lucía', 'Mamani', 'Quispe', '976543210', 1, '87654321', 'Jirón Las Gaviotas 355', 2, '$2a$12$Rq0h7L1SgLHwrcDvQyT7BeSFKbtCubwMpVLDG9QBmFkOt57TaGweu', 3, 2, b'1'), 
-('Carlos Eduardo', 'Fernández', 'Ríos', '965432109', 1, '23456789', 'Av. Arequipa 789', 1, '$2a$12$df63Z7i9m8Im1VkdpltuD.z2NrQylDtLOjH.MvvRMqTUeaSAgawUq', 4, 1, b'1'), 
-('Ana Gabriela', 'Torres', 'Medina', '954321098', 1, '34567890', 'Calle La Paz 321', 1, '$2a$12$CGL/wGohg3.Pky92kMsMpu7/lbfCk9rDeM6JwDvKcEoYCx95ASquS', 3, 2, b'1'), 
-('Luis Enrique', 'Martínez', 'Gómez', '943210987', 1, '45678901', 'Av. Brasil 654', 2, '$2a$12$UdHUb0HW9uO.trOhgpzKA.TXKYTMJJ.hBYqMkwfUOJVnZRJaqQb0q', 3, 1, b'1'), 
-('Sofía Milagros', 'Ruiz', 'Flores', '932109876', 1, '56789012', 'Calle Los Pinos 987', 1, '$2a$12$fX3hRZABL4Jexn4tTdk7DuOcckP9B9nS8VaPNhON0llyvsBWPfnMa', 3, 2, b'1'), 
-('Pedro Pablo', 'Contreras', 'Delgado', '951124055', 1, '48452001', 'Jirón Las Gaviotas 88', 2, '$2a$12$RGthHKMjiCheraC79681zuFQWZRM.LbMFOBp.eFuJcuCQmncWYw1.', 4, 1, b'1'), 
-('Takumi Ryosuke', 'Fujiwara', 'Sato', '462150109', 1, '50122144', 'Jirón Las Gaviotas 606', 1, '$2a$12$umWLPjYer4edVL/Mf6A2z.rAq/C3R0sL0IBSU2P3F2xpR6t89z18a', 4, 1, b'1'), 
-('Jorge Juan', 'Negrete', 'Alvarado', '659501248', 1, '95162840', 'Calle La Joya 2332', 2, '$2a$12$5MuxUsvtFoqhaJKIVYkBv.T3BrOXrEhiY5caXSfnJLLhddqhV/K86', 3, 1, b'1');
+('Admin', 'Admin', 'Admin', '999999999', 1, '49086269', '000000000000', 1, '$2a$10$KVSE7ItU3xJzNplMky5kx.LBzmHn1O1Pz7y9VwLrEwHucoZ3P8x2S', 1, 3, b'1'), 
+('Mariela', 'Solorzano', 'Vargas', '987654321', 1, '41015448', 'Jirón Las Gaviotas 122', 2, '$2a$10$KVSE7ItU3xJzNplMky5kx.LBzmHn1O1Pz7y9VwLrEwHucoZ3P8x2S', 2, 2, b'1'), 
+('Andrea Lucía', 'Mamani', 'Quispe', '976543210', 1, '87654321', 'Jirón Las Gaviotas 355', 2, '$2a$10$KVSE7ItU3xJzNplMky5kx.LBzmHn1O1Pz7y9VwLrEwHucoZ3P8x2S', 3, 2, b'1'), 
+('Carlos Eduardo', 'Fernández', 'Ríos', '965432109', 1, '23456789', 'Av. Arequipa 789', 1, '$2a$10$KVSE7ItU3xJzNplMky5kx.LBzmHn1O1Pz7y9VwLrEwHucoZ3P8x2S', 4, 1, b'1'), 
+('Ana Gabriela', 'Torres', 'Medina', '954321098', 1, '34567890', 'Calle La Paz 321', 1, '$2a$10$KVSE7ItU3xJzNplMky5kx.LBzmHn1O1Pz7y9VwLrEwHucoZ3P8x2S', 3, 2, b'1'), 
+('Luis Enrique', 'Martínez', 'Gómez', '943210987', 1, '45678901', 'Av. Brasil 654', 2, '$2a$10$KVSE7ItU3xJzNplMky5kx.LBzmHn1O1Pz7y9VwLrEwHucoZ3P8x2S', 3, 1, b'1'), 
+('Sofía Milagros', 'Ruiz', 'Flores', '932109876', 1, '56789012', 'Calle Los Pinos 987', 1, '$2a$10$KVSE7ItU3xJzNplMky5kx.LBzmHn1O1Pz7y9VwLrEwHucoZ3P8x2S', 3, 2, b'1'), 
+('Pedro Pablo', 'Contreras', 'Delgado', '951124055', 1, '48452001', 'Jirón Las Gaviotas 88', 2, '$2a$10$KVSE7ItU3xJzNplMky5kx.LBzmHn1O1Pz7y9VwLrEwHucoZ3P8x2S', 4, 1, b'1'), 
+('Takumi Ryosuke', 'Fujiwara', 'Sato', '462150109', 1, '50122144', 'Jirón Las Gaviotas 606', 1, '$2a$10$KVSE7ItU3xJzNplMky5kx.LBzmHn1O1Pz7y9VwLrEwHucoZ3P8x2S', 4, 1, b'1'), 
+('Jorge Juan', 'Negrete', 'Alvarado', '659501248', 1, '95162840', 'Calle La Joya 2332', 2, '$2a$10$KVSE7ItU3xJzNplMky5kx.LBzmHn1O1Pz7y9VwLrEwHucoZ3P8x2S', 3, 1, b'1');
 
 INSERT INTO delivery (id, unidad, placa) VALUES 
 (4, 'Mototaxi', '2102-JD'), 

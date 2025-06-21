@@ -22,37 +22,37 @@ public class DetallePedidoRestController {
 
     private final DetallePedidoService detallePedidoService;
     
-    @GetMapping
+    @GetMapping // Postman: OK
     public ResponseEntity<List<DetallePedidoDTO>> listarTodos() {
         List<DetallePedidoDTO> detalles = detallePedidoService.listarTodos();
         return ResponseEntity.ok(detalles);
     }
 
-    @PostMapping
+    @PostMapping // Postman: OK
     public ResponseEntity<DetallePedidoDTO> crear(@RequestBody DetallePedidoDTO dto) {
         DetallePedidoDTO creado = detallePedidoService.crear(dto);
         return ResponseEntity.created(URI.create("/api/detalle-pedido/" + creado.getId())).body(creado);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") // Postman: OK
     public ResponseEntity<DetallePedidoDTO> actualizar(@PathVariable Long id, @RequestBody DetallePedidoDTO dto) {
         DetallePedidoDTO actualizado = detallePedidoService.actualizar(id, dto);
         return ResponseEntity.ok(actualizado);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") // Postman: OK
     public ResponseEntity<DetallePedidoDTO> obtenerPorId(@PathVariable Long id) {
         DetallePedidoDTO detalle = detallePedidoService.obtenerPorId(id);
         return ResponseEntity.ok(detalle);
     }
 
-    @GetMapping("/pedido/{pedidoId}")
+    @GetMapping("/pedido/{pedidoId}") // Postman: OK
     public ResponseEntity<List<DetallePedidoDTO>> listarPorPedido(@PathVariable Long pedidoId) {
         List<DetallePedidoDTO> detalles = detallePedidoService.listarPorPedidoId(pedidoId);
         return ResponseEntity.ok(detalles);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") // Postman: OK
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         detallePedidoService.eliminar(id);
         return ResponseEntity.noContent().build();

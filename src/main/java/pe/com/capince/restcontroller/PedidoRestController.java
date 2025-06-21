@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import pe.com.capince.dto.PedidoDTO;
@@ -24,39 +23,39 @@ public class PedidoRestController {
 
     private final PedidoService pedidoService;
 
-    @PostMapping
+    @PostMapping // OK
     public ResponseEntity<PedidoDTO> crear(@RequestBody PedidoDTO dto) {
         PedidoDTO creado = pedidoService.crear(dto);
         return ResponseEntity.created(URI.create("/api/pedido/" + creado.getId())).body(creado);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") // OK
     public ResponseEntity<PedidoDTO> actualizar(@PathVariable Long id, @RequestBody PedidoDTO dto) {
         PedidoDTO actualizado = pedidoService.actualizar(id, dto);
         return ResponseEntity.ok(actualizado);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") // OK
     public ResponseEntity<PedidoDTO> obtenerPorId(@PathVariable Long id) {
         PedidoDTO pedido = pedidoService.obtenerPorId(id);
         return ResponseEntity.ok(pedido);
     }
 
-    @GetMapping
+    @GetMapping // OK
     public ResponseEntity<List<PedidoDTO>> listarTodos() {
         List<PedidoDTO> pedidos = pedidoService.listarTodos();
         return ResponseEntity.ok(pedidos);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") // OK
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         pedidoService.eliminar(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}/estado")
-    public ResponseEntity<Void> cambiarEstado(@PathVariable Long id, @RequestParam Byte nuevoEstado) {
+    @PatchMapping("/{id}/estado/{nuevoEstado}") // OK
+    public ResponseEntity<Void> cambiarEstado(@PathVariable Long id, @PathVariable Byte nuevoEstado) {
         pedidoService.cambiarEstado(id, nuevoEstado);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

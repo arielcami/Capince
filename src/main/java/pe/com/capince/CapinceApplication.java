@@ -10,7 +10,7 @@ public class CapinceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CapinceApplication.class, args);
 		
-		System.out.println(new BCryptPasswordEncoder().encode("111111"));
+		System.out.println(new BCryptPasswordEncoder().encode("123456"));
 
 	}
 

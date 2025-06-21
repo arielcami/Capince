@@ -30,10 +30,25 @@ public class SecurityConfig {
 		var csrfRequestHandler = new CsrfTokenRequestAttributeHandler();
 		csrfRequestHandler.setCsrfRequestAttributeName("_csrf");
 
+		/*
+		// CSFR DESACTIVADO
+		http
+	    .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+	    .csrf(csrf -> csrf.disable()) // Desactiva CSRF
+	    .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class) // Esto ya no es necesario si desactivas CSRF
+	    .authorizeHttpRequests(auth -> auth
+	        .requestMatchers("/api/**").hasAnyRole("ADMIN", "GERENTE")
+	        .anyRequest().authenticated()
+	    )
+	    .httpBasic(withDefaults());
+	    */
+				
+
+		// CSRF ACTIVADO
 		http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 			.csrf(csrf -> csrf
 				.csrfTokenRequestHandler(csrfRequestHandler)
-				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // permite acceder desde JS/cliente
+				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 			)
 			.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
 			.authorizeHttpRequests(auth -> auth
@@ -41,6 +56,7 @@ public class SecurityConfig {
 				.anyRequest().authenticated()
 			)
 			.httpBasic(withDefaults());
+
 
 		return http.build();
 	}
@@ -55,7 +71,7 @@ public class SecurityConfig {
 	CorsConfigurationSource corsConfigurationSource() {
 		var config = new CorsConfiguration();
 		config.setAllowedOrigins(List.of("*")); // Puedes limitar esto después
-		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
 		config.setAllowedHeaders(List.of("*"));
 		config.setAllowCredentials(true);
 
