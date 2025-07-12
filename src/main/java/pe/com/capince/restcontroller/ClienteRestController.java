@@ -4,7 +4,6 @@ import pe.com.capince.dto.ClienteDTO;
 import pe.com.capince.service.ClienteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController

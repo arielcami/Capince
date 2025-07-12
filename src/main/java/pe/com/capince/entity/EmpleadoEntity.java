@@ -1,10 +1,13 @@
 package pe.com.capince.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import pe.com.capince.entity.base.PersonaBase;
-
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -15,9 +18,9 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @Entity
 @Table(name = "empleado")
-@Inheritance(strategy = InheritanceType.JOINED) // Pa poder hacer herencia con Delivery
 public class EmpleadoEntity extends PersonaBase implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -32,8 +35,11 @@ public class EmpleadoEntity extends PersonaBase implements Serializable {
     @JoinColumn(name = "rol", nullable = false)
     private RolEntity rol;
 
-    @Column(name = "clave", nullable = false, length = 80)
-    private String clave;
+    @Column(name = "password", nullable = false, length = 80)
+    private String password;
+    
+    @Column(name = "username", nullable = false, length = 50)
+    private String username;
 
     @Column(name = "creado_en", updatable = false)
     private LocalDateTime creadoEn;

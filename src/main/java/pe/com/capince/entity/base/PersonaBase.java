@@ -2,7 +2,9 @@ package pe.com.capince.entity.base;
 
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import pe.com.capince.entity.TipoDocumentoEntity;
 import pe.com.capince.entity.SexoEntity;

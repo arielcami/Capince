@@ -8,11 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import pe.com.capince.dto.PedidoDTO;
 import pe.com.capince.entity.ClienteEntity;
-import pe.com.capince.entity.DeliveryEntity;
 import pe.com.capince.entity.EmpleadoEntity;
 import pe.com.capince.entity.PedidoEntity;
 import pe.com.capince.repository.ClienteRepository;
-import pe.com.capince.repository.DeliveryRepository;
 import pe.com.capince.repository.EmpleadoRepository;
 import pe.com.capince.repository.PedidoRepository;
 import pe.com.capince.service.PedidoService;
@@ -24,7 +22,6 @@ public class PedidoServiceImpl implements PedidoService {
 	private final PedidoRepository pedidoRepository;
 	private final ClienteRepository clienteRepository;
 	private final EmpleadoRepository empleadoRepository;
-	private final DeliveryRepository deliveryRepository;
 	private final ModelMapper modelMapper;
 
 	@Override
@@ -39,16 +36,10 @@ public class PedidoServiceImpl implements PedidoService {
 					.orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
 		}
 
-		DeliveryEntity delivery = null;
-		if (dto.getDeliveryId() != null) {
-			delivery = deliveryRepository.findById(dto.getDeliveryId().longValue())
-					.orElseThrow(() -> new RuntimeException("Delivery no encontrado"));
-		}
 
 		PedidoEntity entity = modelMapper.map(dto, PedidoEntity.class);
 		entity.setCliente(cliente);
 		entity.setEmpleado(empleado);
-		entity.setDelivery(delivery);
 		entity.setEstado(dto.getEstado() != null ? dto.getEstado() : (byte) 0); // Estado inicial si no se pasa
 
 		return modelMapper.map(pedidoRepository.save(entity), PedidoDTO.class);
@@ -66,11 +57,6 @@ public class PedidoServiceImpl implements PedidoService {
 			existente.setEmpleado(empleado);
 		}
 
-		if (dto.getDeliveryId() != null) {
-			DeliveryEntity delivery = deliveryRepository.findById(dto.getDeliveryId().longValue())
-					.orElseThrow(() -> new RuntimeException("Delivery no encontrado"));
-			existente.setDelivery(delivery);
-		}
 
 		if (dto.getDireccionEntrega() != null)
 			existente.setDireccionEntrega(dto.getDireccionEntrega());

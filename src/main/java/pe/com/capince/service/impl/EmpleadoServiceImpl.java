@@ -3,7 +3,6 @@ package pe.com.capince.service.impl;
 import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import pe.com.capince.dto.EmpleadoDTO;
@@ -30,8 +29,12 @@ public class EmpleadoServiceImpl extends ServiceGenericImpl<EmpleadoEntity, Long
 	private final SexoRepository sexoRepository;
 	private final PasswordEncoder passwordEncoder;
 
-	public EmpleadoServiceImpl(EmpleadoRepository empleadoRepository, DistritoRepository distritoRepository,
-			RolRepository rolRepository, TipoDocumentoRepository tipoDocumentoRepository, SexoRepository sexoRepository,
+	public EmpleadoServiceImpl(
+			EmpleadoRepository empleadoRepository, 
+			DistritoRepository distritoRepository,
+			RolRepository rolRepository, 
+			TipoDocumentoRepository tipoDocumentoRepository, 
+			SexoRepository sexoRepository,
 			PasswordEncoder passwordEncoder) {
 		super(empleadoRepository);
 		this.empleadoRepository = empleadoRepository;
@@ -50,6 +53,7 @@ public class EmpleadoServiceImpl extends ServiceGenericImpl<EmpleadoEntity, Long
 		entity.setApellidoPaterno(dto.getApellidoPaterno());
 		entity.setApellidoMaterno(dto.getApellidoMaterno());
 		entity.setTelefono(dto.getTelefono());
+		entity.setUsername(dto.getUsername());
 		entity.setDocumento(dto.getDocumento());
 
 		// Conversión de String a entidad
@@ -69,17 +73,17 @@ public class EmpleadoServiceImpl extends ServiceGenericImpl<EmpleadoEntity, Long
 		entity.setDistrito(distrito);
 		entity.setRol(rol);
 
-		// Validar que la clave venga
-		if (dto.getClave() == null || dto.getClave().isBlank()) {
+		// Validar que la clave venga y cifrarla antes de guardar
+		if (dto.getPassword() == null || dto.getPassword().isBlank()) {
 			throw new IllegalArgumentException("La clave es obligatoria al crear un empleado.");
 		}
-
-		entity.setClave(passwordEncoder.encode(dto.getClave()));
+		
+		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 
 		EmpleadoEntity guardado = empleadoRepository.save(entity);
 
 		dto.setId(guardado.getId().longValue());
-		dto.setClave("********"); // Opcional: dejarlo en null si prefieres
+		dto.setPassword(null);
 
 		return dto;
 	}
@@ -104,6 +108,7 @@ public class EmpleadoServiceImpl extends ServiceGenericImpl<EmpleadoEntity, Long
 		dto.setApellidoPaterno(entity.getApellidoPaterno());
 		dto.setApellidoMaterno(entity.getApellidoMaterno());
 		dto.setTelefono(entity.getTelefono());
+		dto.setUsername(entity.getUsername());
 		dto.setDocumento(entity.getDocumento());
 		dto.setTipoDocumento(entity.getTipoDocumento().getNombre());
 		dto.setSexo(entity.getSexo().getNombre());
@@ -111,7 +116,7 @@ public class EmpleadoServiceImpl extends ServiceGenericImpl<EmpleadoEntity, Long
 		dto.setEstado(entity.isEstado());
 		dto.setDistrito(entity.getDistrito().getNombre());
 		dto.setRol(entity.getRol().getNombre());
-		//dto.setClave("********");
+		dto.setPassword(null);
 
 		return dto;
 	}
@@ -125,6 +130,7 @@ public class EmpleadoServiceImpl extends ServiceGenericImpl<EmpleadoEntity, Long
 		entity.setApellidoPaterno(dto.getApellidoPaterno());
 		entity.setApellidoMaterno(dto.getApellidoMaterno());
 		entity.setTelefono(dto.getTelefono());
+		entity.setUsername(dto.getUsername());
 		entity.setDocumento(dto.getDocumento());
 
 		TipoDocumentoEntity tipoDocumento = tipoDocumentoRepository.findByNombre(dto.getTipoDocumento())
@@ -143,12 +149,16 @@ public class EmpleadoServiceImpl extends ServiceGenericImpl<EmpleadoEntity, Long
 		entity.setDistrito(distrito);
 		entity.setRol(rol);
 
-		if (dto.getClave() != null && !dto.getClave().isBlank()) {
-			entity.setClave(passwordEncoder.encode(dto.getClave()));
+		// Solo cifrar y actualizar la contraseña si se proporciona una nueva
+		if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+			entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 		}
 
 		EmpleadoEntity actualizado = empleadoRepository.save(entity);
-		return toDTO(actualizado);
+		
+		EmpleadoDTO retornoDTO = toDTO(actualizado);
+		retornoDTO.setPassword(null); // Reasegurar que la clave no se envíe
+		return retornoDTO;
 	}
 
 	@Override
@@ -158,27 +168,23 @@ public class EmpleadoServiceImpl extends ServiceGenericImpl<EmpleadoEntity, Long
 		}
 		empleadoRepository.deleteById(id);
 	}
-	
-	
-	@Override
-    @Transactional
-    public void activar(Long id) {
-        if (!empleadoRepository.existsById(id)) {
-            throw new EntityNotFoundException("Empleado no encontrado con id: " + id);
-        }
-        empleadoRepository.activar(id);
-    }
 
-    @Override
-    @Transactional
-    public void desactivar(Long id) {
-        if (!empleadoRepository.existsById(id)) {
-            throw new EntityNotFoundException("Empleado no encontrado con id: " + id);
-        }
-        empleadoRepository.desactivar(id);
-    }
-	
-	
-	
+	@Override
+	@Transactional
+	public void activar(Long id) {
+		if (!empleadoRepository.existsById(id)) {
+			throw new EntityNotFoundException("Empleado no encontrado con id: " + id);
+		}
+		empleadoRepository.activar(id);
+	}
+
+	@Override
+	@Transactional
+	public void desactivar(Long id) {
+		if (!empleadoRepository.existsById(id)) {
+			throw new EntityNotFoundException("Empleado no encontrado con id: " + id);
+		}
+		empleadoRepository.desactivar(id);
+	}
 
 }

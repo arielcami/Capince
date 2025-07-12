@@ -2,81 +2,76 @@ package pe.com.capince.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import java.util.List;
-import static org.springframework.security.config.Customizer.withDefaults;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
-	@SuppressWarnings("unused")
-	private final EmpleadoDetailsService empleadoDetailsService;
+	private final CustomUserDetailsService customUserDetailsService;
+	private final JwtFiltroAutenticacion jwtFiltroAutenticacion;
 
-	public SecurityConfig(EmpleadoDetailsService empleadoDetailsService) {
-		this.empleadoDetailsService = empleadoDetailsService;
+	public SecurityConfig(CustomUserDetailsService customUserDetailsService,
+			JwtFiltroAutenticacion jwtFiltroAutenticacion) {
+		this.customUserDetailsService = customUserDetailsService;
+		this.jwtFiltroAutenticacion = jwtFiltroAutenticacion;
 	}
 
 	@Bean
-	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		var csrfRequestHandler = new CsrfTokenRequestAttributeHandler();
-		csrfRequestHandler.setCsrfRequestAttributeName("_csrf");
-
-		/*
-		// CSFR DESACTIVADO
-		http
-	    .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-	    .csrf(csrf -> csrf.disable()) // Desactiva CSRF
-	    .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class) // Esto ya no es necesario si desactivas CSRF
-	    .authorizeHttpRequests(auth -> auth
-	        .requestMatchers("/api/**").hasAnyRole("ADMIN", "GERENTE")
-	        .anyRequest().authenticated()
-	    )
-	    .httpBasic(withDefaults());
-	    */
-				
-
-		// CSRF ACTIVADO
-		http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-			.csrf(csrf -> csrf
-				.csrfTokenRequestHandler(csrfRequestHandler)
-				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-			)
-			.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
-			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/api/**").hasAnyRole("ADMIN", "GERENTE")
-				.anyRequest().authenticated()
-			)
-			.httpBasic(withDefaults());
-
-
-		return http.build();
-	}
-
-
-	@Bean
-	PasswordEncoder passwordEncoder() {
+	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
 	@Bean
-	CorsConfigurationSource corsConfigurationSource() {
-		var config = new CorsConfiguration();
-		config.setAllowedOrigins(List.of("*")); // Puedes limitar esto después
-		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-		config.setAllowedHeaders(List.of("*"));
-		config.setAllowCredentials(true);
-
-		var source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", config);
-		return source;
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+		return config.getAuthenticationManager();
 	}
+
+	@SuppressWarnings("deprecation")
+	@Bean
+	public AuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+		authProvider.setUserDetailsService(customUserDetailsService); // Usa tu CustomUserDetailsService
+		authProvider.setPasswordEncoder(passwordEncoder()); // Usa tu PasswordEncoder
+		return authProvider;
+	}
+
+	@Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(authorize -> authorize
+                // Endpoint de autenticación (público)
+                .requestMatchers("/authenticate").permitAll()
+
+                // Ahora solo /api/producto es completamente pública
+                .requestMatchers("/api/producto").permitAll()
+
+                // Rutas que pueden ver ADMIN, GERENTE y MESERO (excluyendo RECEPCION)
+                .requestMatchers("/api/pedido", "/api/detalle-pedido").hasAnyRole("ADMIN", "GERENTE", "MESERO")
+
+                // Rutas que pueden ver solamente ADMIN y GERENTE
+                .requestMatchers("/api/empleado", "/api/cliente").hasAnyRole("ADMIN", "GERENTE")
+
+                // Cualquier otra solicitud requiere autenticación (y no está cubierta por las reglas anteriores)
+                .anyRequest().authenticated()
+            )
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtFiltroAutenticacion, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
 }

@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import pe.com.capince.dto.ClienteDTO;
 import pe.com.capince.dto.PedidoDTO;
 import pe.com.capince.entity.ClienteEntity;
-import pe.com.capince.entity.DeliveryEntity;
 import pe.com.capince.entity.EmpleadoEntity;
 import pe.com.capince.entity.PedidoEntity;
 
@@ -50,7 +49,6 @@ public class ConfigModelMapper {
 			mapper.map(PedidoDTO::getFechaPedido, PedidoEntity::setFechaPedido);
 			mapper.skip(PedidoEntity::setCliente);
 			mapper.skip(PedidoEntity::setEmpleado);
-			mapper.skip(PedidoEntity::setDelivery);
 		});
 		pedidoMap.setPostConverter(ctx -> {
 			PedidoDTO dto = ctx.getSource();
@@ -66,21 +64,15 @@ public class ConfigModelMapper {
 				empleado.setId(dto.getEmpleadoId().longValue());
 				entity.setEmpleado(empleado);
 			}
-			if (dto.getDeliveryId() != null) {
-				var delivery = new DeliveryEntity();
-				delivery.setId(dto.getDeliveryId().longValue());
-				entity.setDelivery(delivery);
-			}
 			return entity;
 		});
 
-		// ------------ PedidoEntity → PedidoDTO (seguro) ------------
+		// ------------ PedidoEntity → PedidoDTO ------------
 		TypeMap<PedidoEntity, PedidoDTO> pedidoOut = modelMapper.emptyTypeMap(PedidoEntity.class, PedidoDTO.class);
 		pedidoOut.addMappings(mapper -> {
 			mapper.map(PedidoEntity::getId, PedidoDTO::setId);
 			mapper.map(src -> safeId(src.getCliente()), PedidoDTO::setClienteId);
 			mapper.map(src -> safeId(src.getEmpleado()), PedidoDTO::setEmpleadoId);
-			mapper.map(src -> safeId(src.getDelivery()), PedidoDTO::setDeliveryId);
 			mapper.map(PedidoEntity::getTotal, PedidoDTO::setTotal);
 			mapper.map(PedidoEntity::getEstado, PedidoDTO::setEstado);
 			mapper.map(PedidoEntity::getDireccionEntrega, PedidoDTO::setDireccionEntrega);
@@ -93,7 +85,6 @@ public class ConfigModelMapper {
 
 			dto.setClienteNombre(concatNombre(entity.getCliente()));
 			dto.setEmpleadoNombre(concatNombre(entity.getEmpleado()));
-			dto.setDeliveryNombre(concatNombre(entity.getDelivery()));
 
 			return dto;
 		});

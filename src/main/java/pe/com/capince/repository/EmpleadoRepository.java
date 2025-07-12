@@ -8,7 +8,10 @@ import org.springframework.data.repository.query.Param;
 import pe.com.capince.entity.EmpleadoEntity;
 
 public interface EmpleadoRepository extends JpaRepository<EmpleadoEntity, Long> {
+	
     Optional<EmpleadoEntity> findByDocumento(String documento);
+    
+    Optional<EmpleadoEntity> findByUsername(String username);
     
     @Modifying
     @Query("UPDATE EmpleadoEntity e SET e.estado = false WHERE e.id = :id")
