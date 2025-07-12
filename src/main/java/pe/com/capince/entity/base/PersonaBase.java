@@ -1,6 +1,5 @@
 package pe.com.capince.entity.base;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

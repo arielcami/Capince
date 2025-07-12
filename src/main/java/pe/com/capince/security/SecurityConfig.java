@@ -18,52 +18,68 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-	private final CustomUserDetailsService customUserDetailsService;
-	private final JwtFiltroAutenticacion jwtFiltroAutenticacion;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final JwtFiltroAutenticacion jwtFiltroAutenticacion;
 
-	public SecurityConfig(CustomUserDetailsService customUserDetailsService,
-			JwtFiltroAutenticacion jwtFiltroAutenticacion) {
-		this.customUserDetailsService = customUserDetailsService;
-		this.jwtFiltroAutenticacion = jwtFiltroAutenticacion;
-	}
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService,
+                          JwtFiltroAutenticacion jwtFiltroAutenticacion) {
+        this.customUserDetailsService = customUserDetailsService;
+        this.jwtFiltroAutenticacion = jwtFiltroAutenticacion;
+    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-		return config.getAuthenticationManager();
-	}
+        return config.getAuthenticationManager();
+    }
 
     @SuppressWarnings("deprecation")
-    @Bean
+	@Bean
     AuthenticationProvider authenticationProvider() {
-		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-		authProvider.setUserDetailsService(customUserDetailsService); // Usa tu CustomUserDetailsService
-		authProvider.setPasswordEncoder(passwordEncoder()); // Usa tu PasswordEncoder
-		return authProvider;
-	}
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(customUserDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorize -> authorize
-                // Endpoint de autenticación (público)
-                .requestMatchers("/authenticate").permitAll()
 
-                // Ahora solo /api/producto es completamente pública
+                // === RUTAS PÚBLICAS ===
+                .requestMatchers("/authenticate").permitAll()
                 .requestMatchers("/api/producto").permitAll()
 
-                // Rutas que pueden ver ADMIN, GERENTE y MESERO (excluyendo RECEPCION)
-                .requestMatchers("/api/pedido", "/api/detalle-pedido").hasAnyRole("ADMIN", "GERENTE", "MESERO")
+                // === SOLO ADMIN ===
+                .requestMatchers(
+                    "/api/sexo",
+                    "/api/distrito",
+                    "/api/rol"
+                ).hasRole("ADMIN")
 
-                // Rutas que pueden ver solamente ADMIN y GERENTE
-                .requestMatchers("/api/empleado", "/api/cliente").hasAnyRole("ADMIN", "GERENTE")
+                // === ADMIN y GERENTE ===
+                .requestMatchers(
+                    "/api/empleado",
+                    "/api/tipo-documento",
+                    "/api/tipo-producto"
+                ).hasAnyRole("ADMIN", "GERENTE")
 
-                // Cualquier otra solicitud requiere autenticación (y no está cubierta por las reglas anteriores)
+                // === ADMIN, GERENTE y MESERO ===
+                .requestMatchers(
+                    "/api/pedido",
+                    "/api/detalle-pedido"
+                ).hasAnyRole("ADMIN", "GERENTE", "MESERO")
+
+                // === RECEPCION y superiores ===
+                .requestMatchers("/api/cliente").hasAnyRole("RECEPCION", "GERENTE", "ADMIN")
+
+                // === CUALQUIER OTRA RUTA requiere autenticación ===
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session

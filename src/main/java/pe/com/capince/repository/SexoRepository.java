@@ -5,6 +5,6 @@ import pe.com.capince.entity.SexoEntity;
 
 import java.util.Optional;
 
-public interface SexoRepository extends JpaRepository<SexoEntity, Long> {
+public interface SexoRepository extends JpaRepository<SexoEntity, Short> {
     Optional<SexoEntity> findByNombre(String nombre);
 }

@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DistritoDTO {
+public class SexoDTO {
 
-    private Long id;
-
+	private Short id;
     private String nombre;
 
 }
