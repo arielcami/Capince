@@ -27,27 +27,27 @@ public class SecurityConfig {
 		this.jwtFiltroAutenticacion = jwtFiltroAutenticacion;
 	}
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
+    @Bean
+    PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
-	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
 		return config.getAuthenticationManager();
 	}
 
-	@SuppressWarnings("deprecation")
-	@Bean
-	public AuthenticationProvider authenticationProvider() {
+    @SuppressWarnings("deprecation")
+    @Bean
+    AuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 		authProvider.setUserDetailsService(customUserDetailsService); // Usa tu CustomUserDetailsService
 		authProvider.setPasswordEncoder(passwordEncoder()); // Usa tu PasswordEncoder
 		return authProvider;
 	}
 
-	@Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorize -> authorize
